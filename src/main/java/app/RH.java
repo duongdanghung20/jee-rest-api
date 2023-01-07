@@ -6,8 +6,6 @@ import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import java.io.Serializable;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,10 +17,10 @@ public class RH implements Serializable {
     QueryService qs;
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    public RH() {};
+    public RH() {}
 
     @PostConstruct
-    public void init() throws SQLException {
+    public void init() {
         LOGGER.info("RH Service Creation");
     }
 
@@ -32,7 +30,7 @@ public class RH implements Serializable {
                            String dept,
                            String service,
                            int numDisHours,
-                           int maxOvtHours) throws SQLException {
+                           int maxOvtHours) {
         qs.addTeacher(firstName, lastName, eq, dept, service, numDisHours, maxOvtHours);
     }
 
@@ -51,11 +49,11 @@ public class RH implements Serializable {
         qs.deleteTeacher(id);
     }
 
-    public List<Enseignant> obtainTeacherList() throws SQLException {
+    public List<Enseignant> obtainTeacherList() {
         return qs.obtainTeacherList();
     }
 
-    public List<Enseignant> searchTeacherById(int id) throws NoResultException {
+    public Enseignant searchTeacherById(int id) throws NoResultException {
         return qs.searchTeacherById(id);
     }
 

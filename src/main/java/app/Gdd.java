@@ -5,10 +5,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.io.Serializable;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,10 +16,10 @@ public class Gdd implements Serializable {
     @Inject
     QueryService qs;
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    public Gdd() {};
+    public Gdd() {}
 
     @PostConstruct
-    public void init() throws SQLException {
+    public void init() {
         LOGGER.info("Creation!!");
     }
 
@@ -34,11 +31,11 @@ public class Gdd implements Serializable {
         qs.deleteAssignment(id);
     }
 
-    public List<Assignment> obtainAssignmentList() throws SQLException {
+    public List<Assignment> obtainAssignmentList() {
         return qs.obtainAssignmentList();
     }
 
-    public List<Assignment> searchAssignmentById(int id) throws NoResultException {
+    public Assignment searchAssignmentById(int id) throws NoResultException {
         return qs.searchAssignmentById(id);
     }
 
@@ -51,6 +48,6 @@ public class Gdd implements Serializable {
     }
 
     public List<Assignment> searchUnassigned() throws NoResultException {
-        return qs.searchUnassigned();
+        return searchAssignmentByTeacherId(-1);
     }
 }

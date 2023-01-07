@@ -4,28 +4,21 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import java.lang.Math;
 
 @Path("/scolarite")
 public class ScolariteApplication {
     @Inject
     Scolarite scolarite;
-
-
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public ScolariteApplication() {}
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCourseList() throws SQLException {
+    public Response getCourseList() {
         return Response.ok(this.scolarite.obtainCourseList(), MediaType.APPLICATION_JSON).build();
     }
 
@@ -33,13 +26,18 @@ public class ScolariteApplication {
     @Path("/{searchtype}/{pattern}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSearch(@PathParam("searchtype") String searchType, @PathParam("pattern") String pattern) {
-        List<UE> responseList = switch (searchType) {
-            case "id" -> this.scolarite.searchCourseById(Integer.parseInt(pattern));
-            case "name" -> this.scolarite.searchCourseByName(pattern);
-            case "semester" -> this.scolarite.searchCourseBySemester(Integer.parseInt(pattern));
-            default -> new ArrayList<>();
-        };
-        return Response.ok(responseList, MediaType.APPLICATION_JSON).build();
+        if (searchType.equalsIgnoreCase("id")) {
+            UE response = this.scolarite.searchCourseById(Integer.parseInt(pattern));
+            return Response.ok(response, MediaType.APPLICATION_JSON).build();
+        }
+        else {
+            List<UE> responseList = switch (searchType) {
+                case "name" -> this.scolarite.searchCourseByName(pattern);
+                case "semester" -> this.scolarite.searchCourseBySemester(Integer.parseInt(pattern));
+                default -> new ArrayList<>();
+            };
+            return Response.ok(responseList, MediaType.APPLICATION_JSON).build();
+        }
     }
 
     @POST
@@ -53,7 +51,7 @@ public class ScolariteApplication {
                         @FormParam("numStudents") int numStudents,
                         @FormParam("thresholdCM") int thresholdCM,
                         @FormParam("thresholdTD") int thresholdTD,
-                        @FormParam("thresholdTP") int thresholdTP) throws SQLException, URISyntaxException, IOException {
+                        @FormParam("thresholdTP") int thresholdTP) {
         this.scolarite.addCourse(name, semester, numCMHours, numTDHours, numTPHours, numStudents, thresholdCM, thresholdTD, thresholdTP);
         String respMsg = "Added course " + name + " of semester " + semester;
         LOGGER.info(respMsg);

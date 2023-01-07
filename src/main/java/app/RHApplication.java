@@ -4,7 +4,6 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,7 +19,7 @@ public class RHApplication {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTeacherList() throws SQLException {
+    public Response getTeacherList() {
         return Response.ok(this.rh.obtainTeacherList(), MediaType.APPLICATION_JSON).build();
     }
 
@@ -28,14 +27,17 @@ public class RHApplication {
     @Path("/{searchtype}/{pattern}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSearch(@PathParam("searchtype") String searchType, @PathParam("pattern") String pattern) {
-        List<Enseignant> responseList = new ArrayList<>();
-        if (searchType.equals("id")) {
-            responseList = this.rh.searchTeacherById(Integer.parseInt(pattern));
+        if (searchType.equalsIgnoreCase("id")) {
+            Enseignant response = this.rh.searchTeacherById(Integer.parseInt(pattern));
+            return Response.ok(response, MediaType.APPLICATION_JSON).build();
         }
-        else if (searchType.equals("name")) {
-            responseList = this.rh.searchTeacherByName(pattern);
+        else if (searchType.equalsIgnoreCase("name")){
+            List<Enseignant> responseList = this.rh.searchTeacherByName(pattern);
+            return Response.ok(responseList, MediaType.APPLICATION_JSON).build();
         }
-        return Response.ok(responseList, MediaType.APPLICATION_JSON).build();
+        else {
+            return Response.ok(new ArrayList<>(), MediaType.APPLICATION_JSON).build();
+        }
     }
 
     @POST
@@ -47,7 +49,7 @@ public class RHApplication {
                         @FormParam("dept") String dept,
                         @FormParam("service") String service,
                         @FormParam("numDisHours") int numDisHours,
-                        @FormParam("maxOvtHours") int maxOvtHours) throws SQLException {
+                        @FormParam("maxOvtHours") int maxOvtHours) {
         this.rh.addTeacher(firstName, lastName, eq, dept, service, numDisHours, maxOvtHours);
         String respMsg = "Added " + service + " " + firstName + " " + lastName + " of " + dept;
         LOGGER.info(respMsg);

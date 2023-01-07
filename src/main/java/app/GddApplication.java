@@ -4,7 +4,6 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,7 +19,7 @@ public class GddApplication {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAssignmentList() throws SQLException {
+    public Response getAssignmentList() {
         return Response.ok(this.gdd.obtainAssignmentList(), MediaType.APPLICATION_JSON).build();
     }
 
@@ -28,13 +27,18 @@ public class GddApplication {
     @Path("/{searchtype}/{pattern}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSearch(@PathParam("searchtype") String searchType, @PathParam("pattern") String pattern) {
-        List<Assignment> responseList = switch (searchType) {
-            case "id" -> this.gdd.searchAssignmentById(Integer.parseInt(pattern));
-            case "courseId" -> this.gdd.searchAssignmentByCourseId(Integer.parseInt(pattern));
-            case "teacherId" -> this.gdd.searchAssignmentByTeacherId(Integer.parseInt(pattern));
-            default -> new ArrayList<>();
-        };
-        return Response.ok(responseList, MediaType.APPLICATION_JSON).build();
+        if (searchType.equalsIgnoreCase("id")) {
+            Assignment response = this.gdd.searchAssignmentById(Integer.parseInt(pattern));
+            return Response.ok(response, MediaType.APPLICATION_JSON).build();
+        }
+        else {
+            List<Assignment> responseList = switch (searchType) {
+                case "courseId" -> this.gdd.searchAssignmentByCourseId(Integer.parseInt(pattern));
+                case "teacherId" -> this.gdd.searchAssignmentByTeacherId(Integer.parseInt(pattern));
+                default -> new ArrayList<>();
+            };
+            return Response.ok(responseList, MediaType.APPLICATION_JSON).build();
+        }
     }
 
     @GET

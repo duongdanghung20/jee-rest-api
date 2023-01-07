@@ -5,15 +5,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.URISyntaxException;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import java.lang.Math;
 
 
 @Transactional
@@ -23,10 +17,10 @@ public class Scolarite implements Serializable {
     QueryService qs;
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    public Scolarite() {};
+    public Scolarite() {}
 
     @PostConstruct
-    public void init() throws SQLException {
+    public void init() {
         LOGGER.info("Creation Scolarite!");
     }
 
@@ -38,7 +32,7 @@ public class Scolarite implements Serializable {
                           int numStudents,
                           int thresholdCM,
                           int thresholdTD,
-                          int thresholdTP) throws SQLException, URISyntaxException, IOException {
+                          int thresholdTP) {
 
         qs.addCourse(name, semester, numCMHours, numTDHours, numTPHours, numStudents, thresholdCM, thresholdTD, thresholdTP);
     }
@@ -51,11 +45,11 @@ public class Scolarite implements Serializable {
         qs.deleteCourse(id);
     }
 
-    public List<UE> obtainCourseList() throws SQLException {
+    public List<UE> obtainCourseList() {
         return qs.obtainCourseList();
     }
 
-    public List<UE> searchCourseById(int id) throws NoResultException {
+    public UE searchCourseById(int id) throws NoResultException {
         return qs.searchCourseById(id);
     }
 

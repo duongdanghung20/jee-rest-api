@@ -1,5 +1,7 @@
 package app;
 
+import app.Enseignant.Enseignant;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

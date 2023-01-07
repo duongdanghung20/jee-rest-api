@@ -1,4 +1,4 @@
-package app;
+package app.Enseignant;
 
 import javax.persistence.*;
 import java.io.Serializable;

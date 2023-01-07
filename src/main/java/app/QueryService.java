@@ -1,5 +1,9 @@
 package app;
 
+import app.Assignment.Assignment;
+import app.Enseignant.Enseignant;
+import app.UE.UE;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
@@ -13,16 +17,31 @@ import java.util.logging.Logger;
 @Transactional
 @RequestScoped
 public class QueryService implements Serializable {
-    @PersistenceContext
-    EntityManagerFactory emf;
-    @PersistenceContext
-    EntityManager em;
+    @PersistenceContext(unitName = "rhDB")
+    EntityManagerFactory emfRh;
+
+    @PersistenceContext(unitName = "scolariteDB")
+    EntityManagerFactory emfScolarite;
+
+    @PersistenceContext(unitName = "gddDB")
+    EntityManagerFactory emfGdd;
+
+    @PersistenceContext(unitName = "rhDB")
+    EntityManager emRh;
+
+    @PersistenceContext(unitName = "scolariteDB")
+    EntityManager emScolarite;
+
+    @PersistenceContext(unitName = "gddDB")
+    EntityManager emGdd;
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     public QueryService() {}
 
     @PostConstruct
     public void init() {
-        em = emf.createEntityManager();
+        emRh = emfRh.createEntityManager();
+        emScolarite = emfScolarite.createEntityManager();
+        emGdd = emfGdd.createEntityManager();
     }
 
     @PreDestroy
@@ -38,9 +57,9 @@ public class QueryService implements Serializable {
                            int maxOvtHours) {
         Enseignant teacher = new Enseignant(firstName, lastName, eq, dept, service, numDisHours, maxOvtHours);
 
-        em.getTransaction().begin();
-        em.persist(teacher);
-        em.getTransaction().commit();
+        emRh.getTransaction().begin();
+        emRh.persist(teacher);
+        emRh.getTransaction().commit();
     }
 
     public void updateTeacherById(int id,
@@ -64,9 +83,9 @@ public class QueryService implements Serializable {
                 maxOvtHours = 0;
             }
 
-            em.getTransaction().begin();
+            emRh.getTransaction().begin();
 
-            Enseignant teacher = em.find(Enseignant.class, id);
+            Enseignant teacher = emRh.find(Enseignant.class, id);
             teacher.setFirstName(firstName);
             teacher.setLastName(lastName);
             teacher.setNumHours(numHours);
@@ -76,7 +95,7 @@ public class QueryService implements Serializable {
             teacher.setNumDisHours(numDisHours);
             teacher.setMaxOvtHours(maxOvtHours);
 
-            em.getTransaction().commit();
+            emRh.getTransaction().commit();
 
         }
         catch (NoResultException e) {
@@ -88,9 +107,9 @@ public class QueryService implements Serializable {
         try {
             Enseignant teacher = searchTeacherById(id);
 
-            em.getTransaction().begin();
-            em.remove(teacher);
-            em.getTransaction().commit();
+            emRh.getTransaction().begin();
+            emRh.remove(teacher);
+            emRh.getTransaction().commit();
 
 
             List<Assignment> thisTeacherAssignments = searchAssignmentByTeacherId(id);
@@ -104,19 +123,16 @@ public class QueryService implements Serializable {
     }
 
     public List<Enseignant> obtainTeacherList() {
-        
-        TypedQuery<Enseignant> query = em.createQuery("SELECT OBJECT (e) FROM Enseignant e", Enseignant.class);
-        List<Enseignant> teacherList = query.getResultList();
-        
-        return teacherList;
+
+        TypedQuery<Enseignant> query = emRh.createQuery("SELECT OBJECT (e) FROM Enseignant e", Enseignant.class);
+
+        return query.getResultList();
     }
 
     public Enseignant searchTeacherById(int id) throws NoResultException {
         try {
-            
-            Enseignant teacher = em.find(Enseignant.class, id);
-            
-            return teacher;
+
+            return emRh.find(Enseignant.class, id);
         }
         catch (NoResultException e) {
             throw new NoResultException("Teacher not found!");
@@ -126,11 +142,10 @@ public class QueryService implements Serializable {
     public List<Enseignant> searchTeacherByName(String name) throws NoResultException {
         try {
             
-            TypedQuery<Enseignant> query = em.createQuery("SELECT OBJECT (e) FROM Enseignant e WHERE LOWER(e.firstName) LIKE CONCAT('%', LOWER(:pattern), '%') OR LOWER(e.lastName) LIKE CONCAT('%', LOWER(:pattern), '%')", Enseignant.class);
+            TypedQuery<Enseignant> query = emRh.createQuery("SELECT OBJECT (e) FROM Enseignant e WHERE LOWER(e.firstName) LIKE CONCAT('%', LOWER(:pattern), '%') OR LOWER(e.lastName) LIKE CONCAT('%', LOWER(:pattern), '%')", Enseignant.class);
             query.setParameter("pattern", name);
-            List<Enseignant> teacherList = query.getResultList();
-            
-            return teacherList;
+
+            return query.getResultList();
         }
         catch (NoResultException e) {
             throw new NoResultException("Teacher not found!");
@@ -150,9 +165,9 @@ public class QueryService implements Serializable {
                 numStudents, thresholdCM, thresholdTD, thresholdTP);
 
         
-        em.getTransaction().begin();
-        em.persist(course);
-        em.getTransaction().commit();
+        emScolarite.getTransaction().begin();
+        emScolarite.persist(course);
+        emScolarite.getTransaction().commit();
         
 
         // Initialize new assignments when add new course
@@ -174,7 +189,7 @@ public class QueryService implements Serializable {
     public void updateCourseById(int id, String name, int semester, double numCMHours, double numTDHours, double numTPHours, int numStudents, int thresholdCM, int thresholdTD, int thresholdTP) {
         try {
             
-            UE ueUpdate = em.find(UE.class, id);
+            UE ueUpdate = emScolarite.find(UE.class, id);
 
             int prevNumCMGroups = ueUpdate.getNumCMGroups();
             int prevNumTDGroups = ueUpdate.getNumTDGroups();
@@ -188,7 +203,7 @@ public class QueryService implements Serializable {
             double prevNumTDHours = ueUpdate.getNumTDHours();
             double prevNumTPHours = ueUpdate.getNumTPHours();
 
-            em.getTransaction().begin();
+            emScolarite.getTransaction().begin();
 
             ueUpdate.setName(name);
             ueUpdate.setSemester(semester);
@@ -203,7 +218,7 @@ public class QueryService implements Serializable {
             ueUpdate.setNumTDGroups(numTDGroups);
             ueUpdate.setNumTPGroups(numTPGroups);
 
-            em.getTransaction().commit();
+            emScolarite.getTransaction().commit();
             
 
             // Update assignments according to new number of groups
@@ -288,12 +303,10 @@ public class QueryService implements Serializable {
         try {
             UE course = searchCourseById(id);
             
-            em.getTransaction().begin();
-            em.remove(course);
-            em.getTransaction().commit();
-            
+            emScolarite.getTransaction().begin();
+            emScolarite.remove(course);
+            emScolarite.getTransaction().commit();
 
-            // TODO: delete assignment when delete course using entity manager
             deleteAssignmentByCourseId(id);
 
         } catch (NoResultException e) {
@@ -302,19 +315,16 @@ public class QueryService implements Serializable {
     }
 
     public List<UE> obtainCourseList() {
-        
-        TypedQuery<UE> query = em.createQuery("SELECT OBJECT (u) FROM UE u", UE.class);
-        List<UE> courseList = query.getResultList();
-        
-        return courseList;
+
+        TypedQuery<UE> query = emScolarite.createQuery("SELECT OBJECT (u) FROM UE u", UE.class);
+
+        return query.getResultList();
     }
 
     public UE searchCourseById(int id) throws NoResultException {
         try {
-            
-            UE course = em.find(UE.class, id);
-            
-            return course;
+
+            return emScolarite.find(UE.class, id);
         }
         catch (NoResultException e) {
             throw new NoResultException("Teacher not found!");
@@ -323,12 +333,11 @@ public class QueryService implements Serializable {
 
     public List<UE> searchCourseByName(String name) throws NoResultException {
         try {
-            
-            TypedQuery<UE> query = em.createQuery("SELECT OBJECT (u) FROM UE u WHERE LOWER(u.name) LIKE CONCAT('%', LOWER(:pattern), '%')", UE.class);
+
+            TypedQuery<UE> query = emScolarite.createQuery("SELECT OBJECT (u) FROM UE u WHERE LOWER(u.name) LIKE CONCAT('%', LOWER(:pattern), '%')", UE.class);
             query.setParameter("pattern", name);
-            List<UE> courseList = query.getResultList();
-            
-            return courseList;
+
+            return query.getResultList();
         }
         catch (NoResultException e) {
             throw new NoResultException("Course not found!");
@@ -337,12 +346,11 @@ public class QueryService implements Serializable {
 
     public List<UE> searchCourseBySemester(int semester) throws NoResultException {
         try {
-            
-            TypedQuery<UE> query = em.createQuery("SELECT OBJECT (u) FROM UE u WHERE u.semester = :semester", UE.class);
+
+            TypedQuery<UE> query = emScolarite.createQuery("SELECT OBJECT (u) FROM UE u WHERE u.semester = :semester", UE.class);
             query.setParameter("semester", semester);
-            List<UE> courseList = query.getResultList();
-            
-            return courseList;
+
+            return query.getResultList();
         }
         catch (NoResultException e) {
             throw new NoResultException("Course not found!");
@@ -351,11 +359,10 @@ public class QueryService implements Serializable {
 
     public UE searchLatestInsertedCourse() throws NoResultException {
         try {
-            
-            TypedQuery<UE> query = em.createQuery("SELECT OBJECT (u) FROM UE u WHERE u.id = ( SELECT MAX(u.id) FROM UE )", UE.class);
-            UE latestCourse = query.getSingleResult();
-            
-            return latestCourse;
+
+            TypedQuery<UE> query = emScolarite.createQuery("SELECT OBJECT (u) FROM UE u WHERE u.id = ( SELECT MAX(u.id) FROM UE )", UE.class);
+
+            return query.getSingleResult();
         }
         catch (NoResultException e) {
             throw new NoResultException("Course not found!");
@@ -368,9 +375,9 @@ public class QueryService implements Serializable {
         Assignment a = new Assignment(courseId, teacherId, groupType, groupNumber, numHours);
 
         
-        em.getTransaction().begin();
-        em.persist(a);
-        em.getTransaction().commit();
+        emGdd.getTransaction().begin();
+        emGdd.persist(a);
+        emGdd.getTransaction().commit();
         
 
         LOGGER.info("Added new assignment: Course "  + courseId + " " + groupType + " group " + groupNumber + " for teacher " + teacherId);
@@ -379,12 +386,12 @@ public class QueryService implements Serializable {
     public void updateAssignmentById(int id, int teacherId) {
         try {
             
-            em.getTransaction().begin();
+            emGdd.getTransaction().begin();
 
-            Assignment a = em.find(Assignment.class, id);
+            Assignment a = emGdd.find(Assignment.class, id);
             a.setTeacherId(teacherId);
 
-            em.getTransaction().commit();
+            emGdd.getTransaction().commit();
             
         }
         catch (NoResultException e) {
@@ -395,12 +402,12 @@ public class QueryService implements Serializable {
     public void updateAssignmentNumHoursById(int id, double numHours) {
         try {
             
-            em.getTransaction().begin();
+            emGdd.getTransaction().begin();
 
-            Assignment a = em.find(Assignment.class, id);
+            Assignment a = emGdd.find(Assignment.class, id);
             a.setNumHours(numHours);
 
-            em.getTransaction().commit();
+            emGdd.getTransaction().commit();
             
         }
         catch (NoResultException e) {
@@ -412,9 +419,9 @@ public class QueryService implements Serializable {
         try {
             Assignment a = searchAssignmentById(id);
             
-            em.getTransaction().begin();
-            em.remove(a);
-            em.getTransaction().commit();
+            emGdd.getTransaction().begin();
+            emGdd.remove(a);
+            emGdd.getTransaction().commit();
             
         }
         catch (NoResultException e) {
@@ -435,19 +442,16 @@ public class QueryService implements Serializable {
     }
 
     public List<Assignment> obtainAssignmentList() {
-        
-        TypedQuery<Assignment> query = em.createQuery("SELECT OBJECT (a) FROM Assignment a", Assignment.class);
-        List<Assignment> assignmentList = query.getResultList();
-        
-        return assignmentList;
+
+        TypedQuery<Assignment> query = emGdd.createQuery("SELECT OBJECT (a) FROM Assignment a", Assignment.class);
+
+        return query.getResultList();
     }
 
     public Assignment searchAssignmentById(int id) throws NoResultException {
         try {
-            
-            Assignment a = em.find(Assignment.class, id);
-            
-            return a;
+
+            return emGdd.find(Assignment.class, id);
         }
         catch (NoResultException e) {
             throw new NoResultException("Assignment not found!");
@@ -456,12 +460,11 @@ public class QueryService implements Serializable {
 
     public List<Assignment> searchAssignmentByCourseId(int courseId) throws NoResultException {
         try {
-            
-            TypedQuery<Assignment> query = em.createQuery("SELECT OBJECT (a) FROM Assignment a WHERE a.courseId = :courseId", Assignment.class);
+
+            TypedQuery<Assignment> query = emGdd.createQuery("SELECT OBJECT (a) FROM Assignment a WHERE a.courseId = :courseId", Assignment.class);
             query.setParameter("courseId", courseId);
-            List<Assignment> assignmentList = query.getResultList();
-            
-            return assignmentList;
+
+            return query.getResultList();
         }
         catch (NoResultException e) {
             throw new NoResultException("Assignment not found!");
@@ -470,12 +473,11 @@ public class QueryService implements Serializable {
 
     public List<Assignment> searchAssignmentByTeacherId(int teacherId) throws NoResultException {
         try {
-            
-            TypedQuery<Assignment> query = em.createQuery("SELECT OBJECT (a) FROM Assignment a WHERE a.teacherId = :teacherId", Assignment.class);
+
+            TypedQuery<Assignment> query = emGdd.createQuery("SELECT OBJECT (a) FROM Assignment a WHERE a.teacherId = :teacherId", Assignment.class);
             query.setParameter("teacherId", teacherId);
-            List<Assignment> assignmentList = query.getResultList();
-            
-            return assignmentList;
+
+            return query.getResultList();
         }
         catch (NoResultException e) {
             throw new NoResultException("Assignment not found!");

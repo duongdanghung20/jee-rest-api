@@ -1,5 +1,7 @@
 package app;
 
+import app.Enseignant.Enseignant;
+
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

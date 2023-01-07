@@ -1,5 +1,7 @@
 package app;
 
+import app.UE.UE;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

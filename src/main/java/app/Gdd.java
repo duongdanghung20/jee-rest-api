@@ -1,5 +1,8 @@
 package app;
 
+
+import app.Assignment.Assignment;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -8,8 +11,6 @@ import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
-
-
 @Transactional
 @RequestScoped
 public class Gdd implements Serializable {

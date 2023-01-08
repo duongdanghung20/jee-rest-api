@@ -40,3 +40,9 @@ nb-configuration.xml
 
 # Derby Log
 derby.log
+
+# React modules
+node_modules/
+
+# Git ignore
+.gitignore

@@ -3,6 +3,7 @@ package app;
 import app.Assignment.Assignment;
 import app.Enseignant.Enseignant;
 import app.UE.UE;
+import app.Acc.Acc;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -26,6 +27,9 @@ public class QueryService implements Serializable {
     @PersistenceContext(unitName = "gddDB")
     EntityManagerFactory emfGdd;
 
+    @PersistenceContext(unitName = "accountDB")
+    EntityManagerFactory emfAuth;
+
     @PersistenceContext(unitName = "rhDB")
     EntityManager emRh;
 
@@ -34,6 +38,9 @@ public class QueryService implements Serializable {
 
     @PersistenceContext(unitName = "gddDB")
     EntityManager emGdd;
+
+    @PersistenceContext(unitName = "gddDB")
+    EntityManager emAuth;
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     public QueryService() {}
 
@@ -42,10 +49,15 @@ public class QueryService implements Serializable {
         emRh = emfRh.createEntityManager();
         emScolarite = emfScolarite.createEntityManager();
         emGdd = emfGdd.createEntityManager();
+        emAuth = emfAuth.createEntityManager();
     }
 
     @PreDestroy
     public void destroy() {
+        emRh.close();
+        emScolarite.close();
+        emGdd.close();
+        emAuth.close();
     }
 
     public void addTeacher(String firstName,
@@ -171,16 +183,14 @@ public class QueryService implements Serializable {
         
 
         // Initialize new assignments when add new course
-        UE latestCourseAdded = searchLatestInsertedCourse();
-
-        for (int i = 1; i <= latestCourseAdded.getNumCMGroups(); i++) {
-            addAssignment(latestCourseAdded.getId(), -1, "CM", i, latestCourseAdded.getNumCMHours());
+        for (int i = 1; i <= course.getNumCMGroups(); i++) {
+            addAssignment(course.getId(), -1, "CM", i, course.getNumCMHours());
         }
-        for (int i = 1; i <= latestCourseAdded.getNumTDGroups(); i++) {
-            addAssignment(latestCourseAdded.getId(), -1, "TD", i, latestCourseAdded.getNumTDHours());
+        for (int i = 1; i <= course.getNumTDGroups(); i++) {
+            addAssignment(course.getId(), -1, "TD", i, course.getNumTDHours());
         }
-        for (int i = 1; i <= latestCourseAdded.getNumTPGroups(); i++) {
-            addAssignment(latestCourseAdded.getId(), -1, "TP", i, latestCourseAdded.getNumTPHours());
+        for (int i = 1; i <= course.getNumTPGroups(); i++) {
+            addAssignment(course.getId(), -1, "TP", i, course.getNumTPHours());
         }
 
         LOGGER.info("Added new course ####################################!");
@@ -357,19 +367,6 @@ public class QueryService implements Serializable {
         }
     }
 
-    public UE searchLatestInsertedCourse() throws NoResultException {
-        try {
-
-            TypedQuery<UE> query = emScolarite.createQuery("SELECT OBJECT (u) FROM UE u WHERE u.id = ( SELECT MAX(u.id) FROM UE )", UE.class);
-
-            return query.getSingleResult();
-        }
-        catch (NoResultException e) {
-            throw new NoResultException("Course not found!");
-        }
-    }
-
-
     public void addAssignment(int courseId, int teacherId, String groupType, int groupNumber, double numHours) {
 
         Assignment a = new Assignment(courseId, teacherId, groupType, groupNumber, numHours);
@@ -481,6 +478,43 @@ public class QueryService implements Serializable {
         }
         catch (NoResultException e) {
             throw new NoResultException("Assignment not found!");
+        }
+    }
+
+    public void addAccount(String username, String password, String role) {
+        Acc acc = new Acc(username, password, role);
+
+        emAuth.getTransaction().begin();
+        emAuth.persist(acc);
+        emAuth.getTransaction().commit();
+    }
+
+    public List<Acc> obtainAccountList() {
+
+        TypedQuery<Acc> query = emAuth.createQuery("SELECT OBJECT (account) FROM Acc account", Acc.class);
+
+        return query.getResultList();
+    }
+
+    public Acc searchAccountByUsername(String username) throws NoResultException {
+        try {
+            return emAuth.find(Acc.class, username);
+        }
+        catch (NoResultException e) {
+            throw new NoResultException("Account not found!");
+        }
+    }
+    public void deleteAccount(String username) {
+        try {
+            Acc a = searchAccountByUsername(username);
+
+            emAuth.getTransaction().begin();
+            emAuth.remove(a);
+            emAuth.getTransaction().commit();
+
+        }
+        catch (NoResultException e) {
+            throw new NoResultException("Account not found!");
         }
     }
 }

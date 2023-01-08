@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Knewave&family=Quicksand:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Paytone+One&display=swap');
+
+* {
+  font-family: 'Helvetica';
+  font-weight: 400;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding-bottom: 5%;
+  background-color: #ededed;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+/* Navbar */
+.App .navbar {
+  padding-top: 2%;
+  padding-bottom: 2%;
+  text-align: right;
+}
+
+.navbar div {
+  display: inline;
+  color: #1d1d1d;
+  font-weight: 400;
+  font-size: 20px;
+}
+
+#welcome {
+  padding-right: 1%;
+  border-right: 2px solid rgb(53, 53, 53);
+}
+
+#logout {
+  padding-left: 1%;
+  margin-right: 3%;
+}
+
+#logout:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.navbar a {
+  text-decoration: none;
+}
+
+/* Content */
+.App .Content {
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(92, 92, 92, 0.493);
+  border-radius: 10px;
+  width: 87vw;
+  height: fit-content;
+  margin: 0 auto;
+  padding: 3% 3% 3% 5%;
+}
+
+/* Search bar */
+.search-bar {
+  margin-bottom: 2%;
+}
+
+.search-bar input, button, select, input:focus {
+  font-size: 20px;
+  padding: 10px;
+  border: 1px solid #828282c7;
+  outline: none;
+}
+
+.search-bar select {
+  border-radius: 10px 0 0 10px;
+  border-right-width: 0;
+  margin-right: 0;
+  background-color: #dddddd;
+
+}
+
+.search-bar input {
+  margin-right: 0;
+  margin-left: 0;
+  width: 77.4%;
+}
+
+.search-bar button {
+  border-radius: 0 10px 10px 0;
+  margin-left: 0;
+  background-color: #2196F3;
+  color: #f7f7f7;
+  width: 9%;
+}
+
+.search-bar button:hover {
+  background-color: #0b7dda;
+}
+
+/* Home */
+.home p {
+  font-size: 30px;
+}
+
+/* Book list */
+.book-list {
+  margin-bottom: 50px;
+}
+
+/* Book tables */
+table {
+  border-radius: 15px;
+}
+
+td, th {
+  border: 0;
+}
+
+th:first-child {
+  border-top-left-radius: 15px;
+}
+
+th:last-child {
+  border-top-right-radius: 15px;
+}
+
+.course-table {
+  width: 100%;
+  box-shadow: 0px 0px 10px rgba(81, 81, 81, 0.285);
+}
+
+.course-table td, th {
+  font-size: 15px;
+  border-spacing: 0;
+  border-left: 1px solid #999898ac;
+}
+
+.course-table th:first-child, td:first-child {
+  border-left: 0;
+}
+
+.course-table td {
+  font-weight: 500;
+  border-top: 1px solid #999898ac;
+}
+
+.course-table th {
+  background-color: #dddddd;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-weight: 700;
+}
+
+
+.course-table #id {
+  width: 10%;
+}
+
+.course-table #semester {
+  width: 9%;
+}
+
+.course-table #numstudents {
+  width: 10%;
+}
+
+.course-table #numgroups {
+  width: 12%;
+}
+
+.course-table #action {
+  width: 8%;
+}
+
+.course-table #threshold {
+  width: 10%;
+}
+
+.course-table #numhours {
+  width: 12%;
+}
+
+.course-table .idcol, .semestercol, .numhourscol, .numstudentscol, .thresholdcol, .numgroupscol {
+  text-align: center;
+}
+
+.course-table .editbtn, .deletebtn {
+  border-radius: 10px;
+  color: #f7f7f7;
+  width: 60%;
+}
+
+.course-table .editbtndiv, .deletebtndiv {
+  text-align: center;
+  margin-top: 10%;
+  margin-bottom: 10%;
+}
+
+.course-table .editbtn {
+  background-color: #60caf7;
+}
+
+.course-table .editbtn:hover {
+  background-color: #49a4ca;
+}
+
+.course-table .deletebtn {
+  background-color: #ee4040;
+}
+
+.course-table .deletebtn:hover {
+  background-color: #b82828;
+}
+
+/* Add button */
+.add-btn {
+  margin-bottom: 3%;
+}
+
+.add-btn button {
+  color: #f7f7f7;
+  background-color: #11b848;
+  border-radius: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  float: right;
+  margin-bottom: 3%;
+}
+
+.add-btn button:hover {
+  background-color: #128337;
+}
+
+/* Add */
+.add{
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+.add label, p{
+  text-align: left;
+  display: block;
+  font-size: 20px;
+}
+
+.add h1 {
+  font-size: 25px;
+  margin-bottom: 30px;
+}
+
+.add input {
+  width: 100%;
+  font-size: 20px;
+  padding: 6px 10px;
+  margin: 15px 0;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  display: block;
+}
+
+.add input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+  display: none;
+}
+
+.add button {
+  background: #11b848;
+  color: #fff;
+  border: 0;
+  padding: 10px 20px 10px 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.add button:hover {
+  background: #128337;
+}
+
+/* Error */
+.wrong {
+  color: #f83f3f;
+  margin-top: 5%;
+}
+
+.dummy-container {
+  text-align: center;
+}

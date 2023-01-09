@@ -180,18 +180,26 @@ public class QueryService implements Serializable {
         emScolarite.getTransaction().begin();
         emScolarite.persist(course);
         emScolarite.getTransaction().commit();
-        
 
         // Initialize new assignments when add new course
-        for (int i = 1; i <= course.getNumCMGroups(); i++) {
-            addAssignment(course.getId(), -1, "CM", i, course.getNumCMHours());
+        if (numCMHours > 0) {
+            for (int i = 1; i <= course.getNumCMGroups(); i++) {
+                addAssignment(course.getId(), -1, "CM", i, course.getNumCMHours());
+            }
         }
-        for (int i = 1; i <= course.getNumTDGroups(); i++) {
-            addAssignment(course.getId(), -1, "TD", i, course.getNumTDHours());
+
+        if (numTDHours > 0) {
+            for (int i = 1; i <= course.getNumTDGroups(); i++) {
+                addAssignment(course.getId(), -1, "TD", i, course.getNumTDHours());
+            }
         }
-        for (int i = 1; i <= course.getNumTPGroups(); i++) {
-            addAssignment(course.getId(), -1, "TP", i, course.getNumTPHours());
+
+        if (numTPHours > 0) {
+            for (int i = 1; i <= course.getNumTPGroups(); i++) {
+                addAssignment(course.getId(), -1, "TP", i, course.getNumTPHours());
+            }
         }
+
 
         LOGGER.info("Added new course ####################################!");
     }

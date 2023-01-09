@@ -34,12 +34,17 @@ public class GddApplication {
             return Response.ok(response, MediaType.APPLICATION_JSON).build();
         }
         else {
-            List<Assignment> responseList = switch (searchType) {
-                case "courseId" -> this.gdd.searchAssignmentByCourseId(Integer.parseInt(pattern));
-                case "teacherId" -> this.gdd.searchAssignmentByTeacherId(Integer.parseInt(pattern));
-                default -> new ArrayList<>();
-            };
-            return Response.ok(responseList, MediaType.APPLICATION_JSON).build();
+            if (searchType.equalsIgnoreCase("courseId")) {
+                List<Assignment> response = this.gdd.searchAssignmentByCourseId(Integer.parseInt(pattern));
+                return Response.ok(response, MediaType.APPLICATION_JSON).build();
+            }
+            else if (searchType.equalsIgnoreCase("teacherId")) {
+                List<Assignment> response = this.gdd.searchAssignmentByTeacherId(Integer.parseInt(pattern));
+                return Response.ok(response, MediaType.APPLICATION_JSON).build();
+            }
+            else {
+                return Response.ok(new ArrayList<>(), MediaType.APPLICATION_JSON).build();
+            }
         }
     }
 

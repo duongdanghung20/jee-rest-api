@@ -31,7 +31,7 @@ const CourseList = ({courses}) => {
                     {courses.map((course) => (
                         <tr key={course.id}>
                             <td className='idcol'>{course.id}</td>
-                            <td className='namecol'>{course.name}</td>
+                            <td className='coursenamecol'>{course.name}</td>
                             <td className='semestercol'>{course.semester}</td>
                             <td className='numhourscol'>
                                 <div>CM: {course.numCMHours}</div>

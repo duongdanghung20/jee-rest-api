@@ -109,7 +109,7 @@ button:hover {
   margin-bottom: 50px;
 }
 
-/* Book tables */
+/* Course tables */
 table {
   border-radius: 15px;
 }
@@ -155,7 +155,7 @@ th:last-child {
 
 
 .course-table #id {
-  width: 10%;
+  width: 5%;
 }
 
 .course-table #semester {
@@ -179,11 +179,44 @@ th:last-child {
 }
 
 .course-table #numhours {
-  width: 12%;
+  width: 10%;
 }
 
-.course-table .idcol, .semestercol, .numhourscol, .numstudentscol, .thresholdcol, .numgroupscol {
+.course-table #eq {
+  width: 7%;
+}
+
+.course-table #dhours {
+  width: 7%;
+}
+
+.course-table #ovthours {
+  width: 8%;
+}
+
+.course-table #service {
+  width: 15%;
+}
+
+.course-table #groupnumber {
+  width: 8%;
+}
+
+.course-table #grouptype {
+  width: 6%;
+}
+
+.course-table #teacherid {
+  width: 10%;
+}
+
+
+.course-table .idcol, .semestercol, .numhourscol, .numstudentscol, .thresholdcol, .numgroupscol, .dhourscol, .ovthourscol, .groupnumcol, .grouptypecol, .teacheridcol, .eqcol, .deptcol, .servicecol {
   text-align: center;
+}
+
+.course-table .coursenamecol, .firstnamecol, .lastnamecol {
+  padding-left: 1%;
 }
 
 .course-table .editbtn, .deletebtn {
@@ -286,4 +319,14 @@ th:last-child {
 
 .dummy-container {
   text-align: center;
+}
+
+/* Teacher search bar */
+#teacher-search-bar input{
+  width: 80%;
+}
+
+/* Assignment search bar */
+#assignment-search-bar input{
+  width: 76%;
 }

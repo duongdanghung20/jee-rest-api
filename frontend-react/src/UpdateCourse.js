@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-const UpdateCourse = ({setkeepSection}) => {
+const UpdateCourse = () => {
 
     const {courseId, courseName, courseSemester, courseNumCMHours, courseNumTDHours, courseNumTPHours, courseNumStudents, courseThresholdCM, courseThresholdTD, courseThresholdTP} = useParams();
     const [name, setName] = useState(courseName);
@@ -38,7 +38,6 @@ const UpdateCourse = ({setkeepSection}) => {
         .then(() => {
             alert(`Updated course ${courseId} successfully!`);
             setIsPending(false);
-            setkeepSection(true);
             history.goBack();
         })
     }

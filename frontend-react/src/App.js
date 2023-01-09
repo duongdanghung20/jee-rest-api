@@ -121,9 +121,13 @@ const App = () => {
                 <Route exact path='/'>
                   <h1>Assignment List</h1>
                   <AssignmentSearchBar />
+                  <p>{"~~~~>"} (Search for teacher ID = -1 to display unassigned courses) {"<~~~~"}</p>
                   <AssignmentHome />
                 </Route>
                 <Route path='/search/:searchtype/:pattern'>
+                  <h1>Assignment List</h1>
+                  <AssignmentSearchBar />
+                  <p>{"~~~~>"} (Search for teacher ID = -1 to display unassigned courses) {"<~~~~"}</p>
                   <AssignmentSearchResult />
                 </Route>
                 <Route path='/update/:assignmentId/:teacherId/'>

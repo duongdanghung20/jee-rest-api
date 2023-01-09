@@ -9,7 +9,7 @@ const AssignmentSearchResult = () => {
     const {data: assignments, isPending, error} = useFetch(`http://localhost:8080/gdd/${searchtype}/${pattern}`);
     const {data: teachers, isPending_, error_} = useFetch(`http://localhost:8080/rh`);
     const {data: courses, isPending__, error__} = useFetch(`http://localhost:8080/scolarite`);
-    if (searchtype.toLowerCase() === "teacherId".toLowerCase() && pattern !== -1) {
+    if (searchtype.toLowerCase() === "teacherId".toLowerCase() && pattern !== "-1") {
         return (
             <div className="home"> 
                 { isPending && <p>Loading...</p> }
@@ -32,10 +32,11 @@ const AssignmentSearchResult = () => {
             <div className="home"> 
                 { isPending && <p>Loading...</p> }
                 { error && <p>{error}</p> }
-                { assignments && <AssignmentList assignments={assignments} /> }
+                { assignments && <AssignmentList assignments={assignments} courses={courses} /> }
             </div>
         );
     }
+    
     
 }
  
